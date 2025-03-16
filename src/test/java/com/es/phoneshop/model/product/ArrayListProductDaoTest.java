@@ -19,7 +19,7 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testFindProductsNoResults() {
-        assertFalse(productDao.findProducts().isEmpty());
+        assertFalse(productDao.findProducts(null).isEmpty());
     }
 
     @Test
@@ -45,7 +45,7 @@ public class ArrayListProductDaoTest
 
         productDao.save(product);
 
-        Product result = productDao.findProducts().stream()
+        Product result = productDao.findProducts(null).stream()
                 .filter(product1 -> product.getId().equals(product1.getId()))
                 .findAny()
                 .orElse(null);
@@ -60,7 +60,7 @@ public class ArrayListProductDaoTest
 
         productDao.save(product);
 
-        Product result = productDao.findProducts().stream()
+        Product result = productDao.findProducts(null).stream()
                 .filter(product1 -> product.getId().equals(product1.getId()))
                 .findAny()
                 .orElse(null);
