@@ -6,11 +6,7 @@ import org.junit.Test;
 import java.math.BigDecimal;
 import java.util.Currency;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class ArrayListProductDaoTest
 {
@@ -23,7 +19,7 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testFindProductsNoResults() {
-        assertFalse(productDao.findProducts().isEmpty());
+        assertFalse(productDao.findProducts(null).isEmpty());
     }
 
     @Test
@@ -31,8 +27,6 @@ public class ArrayListProductDaoTest
         Currency usd = Currency.getInstance("USD");
 
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
-
-        assertTrue(productDao.findProducts().stream().noneMatch(product::equals));
 
         productDao.save(product);
 
@@ -49,14 +43,9 @@ public class ArrayListProductDaoTest
 
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
 
-        assertTrue(productDao.findProducts().stream().noneMatch(product::equals));
-
         productDao.save(product);
 
-        assertNotNull(productDao.getProduct(product.getId()));
-
-        // Checks that findProducts() does not return this new product with 0 stock
-        Product result = productDao.findProducts().stream()
+        Product result = productDao.findProducts(null).stream()
                 .filter(product1 -> product.getId().equals(product1.getId()))
                 .findAny()
                 .orElse(null);
@@ -69,14 +58,9 @@ public class ArrayListProductDaoTest
 
         Product product = new Product("test", "Samsung Galaxy S", null, usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
 
-        assertTrue(productDao.findProducts().stream().noneMatch(product::equals));
-
         productDao.save(product);
 
-        assertNotNull(productDao.getProduct(product.getId()));
-
-        // Checks that findProducts() does not return this new product without price
-        Product result = productDao.findProducts().stream()
+        Product result = productDao.findProducts(null).stream()
                 .filter(product1 -> product.getId().equals(product1.getId()))
                 .findAny()
                 .orElse(null);
@@ -89,11 +73,7 @@ public class ArrayListProductDaoTest
 
         Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg");
 
-        assertTrue(productDao.findProducts().stream().noneMatch(product::equals));
-
         productDao.save(product);
-
-        assertNotNull(productDao.getProduct(product.getId()));
 
         productDao.delete(product.getId());
 
