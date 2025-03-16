@@ -55,20 +55,36 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public List<Product> findProducts(String query) {
+    public List<Product> findProducts(String query, SortField field, SortOrder order) {
         readWriteLock.readLock().lock();
         try {
+            Comparator<Product> comparator = Comparator.comparing(product -> {
+               if (SortField.description == field) {
+                   return (Comparable) product.getDescription();
+               } else {
+                   return (Comparable) product.getPrice();
+               }
+            });
+
+            if (order == SortOrder.desc) {
+                comparator = comparator.reversed();
+            }
+
             return products.stream()
                     .filter(product -> {
                         if (query == null || query.isEmpty()) return true;
 
                         List<String> tokenizedQuery = List.of(query.split(" "));
                         List<String> description = List.of(product.getDescription().split(" "));
-                        return description.stream().anyMatch(tokenizedQuery::contains);
+                        return tokenizedQuery.stream().allMatch(description::contains);
                     })
                     .filter(product -> product.getPrice() != null)
                     .filter(product -> product.getStock() > 0)
                     .sorted(Comparator.comparingInt(product -> {
+                        if (query == null) {
+                            return 0;
+                        }
+
                         List<String> tokenizedQuery = List.of(query.split(" "));
                         List<String> description = List.of(product.getDescription().split(" "));
                         Set<String> intersections = description.stream()
@@ -78,6 +94,7 @@ public class ArrayListProductDao implements ProductDao {
 
                         return tokenizedQuery.size() - intersections.size();
                     }))
+                    .sorted(comparator)
                     .collect(Collectors.toList());
         }
         finally {
