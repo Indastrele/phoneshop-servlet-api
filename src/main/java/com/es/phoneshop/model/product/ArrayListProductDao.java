@@ -53,8 +53,8 @@ public class ArrayListProductDao implements ProductDao {
                         return 0;
                     }
 
-                    List<String> tokenizedQuery = List.of(query.split(" "));
-                    List<String> description = List.of(product.getDescription().split(" "));
+                    List<String> tokenizedQuery = List.of(query.toLowerCase().split(" "));
+                    List<String> description = List.of(product.getDescription().toLowerCase().split(" "));
                     Set<String> intersections = description.stream()
                             .distinct()
                             .filter(tokenizedQuery::contains)
@@ -90,8 +90,8 @@ public class ArrayListProductDao implements ProductDao {
                 .filter(product -> {
                     if (query == null || query.isEmpty()) return true;
 
-                    List<String> tokenizedQuery = List.of(query.split(" "));
-                    List<String> description = List.of(product.getDescription().split(" "));
+                    List<String> tokenizedQuery = List.of(query.toLowerCase().split(" "));
+                    String description = product.getDescription().toLowerCase();
                     return tokenizedQuery.stream().allMatch(description::contains);
                 })
                 .filter(product -> product.getPrice() != null)
