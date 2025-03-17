@@ -10,4 +10,9 @@ public class ProductNotFoundException extends RuntimeException {
     public Long getId() {
         return this.id;
     }
+
+    @Override
+    public String getMessage() {
+        return id.toString();
+    }
 }
