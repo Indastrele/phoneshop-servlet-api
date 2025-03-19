@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.product.ProductNotFoundException;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -22,7 +23,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class ProductPriceHistoryPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -35,23 +36,30 @@ public class ProductListPageServletTest {
     private ServletContext context;
 
     private ProductDemoDataContextListener demoDataContextListener = new ProductDemoDataContextListener();
-
-    private ProductListPageServlet servlet = new ProductListPageServlet();
+    private ProductPriceHistoryPageServlet servlet = new ProductPriceHistoryPageServlet();
 
     @Before
     public void setup() throws ServletException {
-        when(context.getInitParameter("insertDemoData")).thenReturn("true");
-        demoDataContextListener.contextInitialized(new ServletContextEvent(context));
-
         servlet.init(config);
+
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
     }
 
     @Test
-    public void testDoGet() throws ServletException, IOException {
+    public void testDoGetWithData() throws ServletException, IOException {
+        when(context.getInitParameter("insertDemoData")).thenReturn("true");
+        demoDataContextListener.contextInitialized(new ServletContextEvent(context));
+
+        when(request.getPathInfo()).thenReturn("/1");
         servlet.doGet(request, response);
 
-        verify(request).setAttribute(eq("products"), any());
+        verify(request).setAttribute(eq("product"), any());
         verify(requestDispatcher).forward(request, response);
+    }
+
+    @Test(expected = ProductNotFoundException.class)
+    public void testDoGetWithOutData() throws ServletException, IOException {
+        when(request.getPathInfo()).thenReturn("/1");
+        servlet.doGet(request, response);
     }
 }
