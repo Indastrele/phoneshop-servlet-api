@@ -33,7 +33,7 @@ public class ArrayListProductDao implements ProductDao {
         try {
             return  products.stream()
                     .filter(product -> id.equals(product.getId()))
-                    .findAny()
+                    .findFirst()
                     .orElse(null);
         }
         finally {
