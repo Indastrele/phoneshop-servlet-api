@@ -48,7 +48,7 @@ public class ArrayListProductDao implements ProductDao {
         try {
             return  products.stream()
                     .filter(product -> id.equals(product.getId()))
-                    .findAny()
+                    .findFirst()
                     .orElse(null);
         }
         finally {
@@ -61,8 +61,7 @@ public class ArrayListProductDao implements ProductDao {
         readWriteLock.readLock().lock();
         try {
             return products.stream()
-                    .filter(product -> product.getPrice() != null)
-                    .filter(product -> product.getStock() > 0)
+                    .filter(product -> product.getPrice() != null && product.getStock() > 0)
                     .collect(Collectors.toList());
         }
         finally {
