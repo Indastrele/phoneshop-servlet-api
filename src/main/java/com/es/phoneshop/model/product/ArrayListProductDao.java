@@ -88,14 +88,16 @@ public class ArrayListProductDao implements ProductDao {
     private List<Product> getFilteredProducts(Comparator<Product> comparator, String query) {
         return products.stream()
                 .filter(product -> {
+                    if (product.getPrice() == null || product.getStock() == 0) {
+                        return false;
+                    }
+
                     if (query == null || query.isEmpty()) return true;
 
                     List<String> tokenizedQuery = List.of(query.toLowerCase().split(" "));
                     String description = product.getDescription().toLowerCase();
                     return tokenizedQuery.stream().allMatch(description::contains);
                 })
-                .filter(product -> product.getPrice() != null)
-                .filter(product -> product.getStock() > 0)
                 .sorted(comparator)
                 .collect(Collectors.toList());
     }
