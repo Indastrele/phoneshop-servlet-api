@@ -14,21 +14,35 @@ import java.io.IOException;
 import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
+    private static final String QUERY = "query";
+    private static final String ORDER = "order";
+    private static final String SORT = "sort";
     private ProductDao dao;
+
+    public ProductListPageServlet() {
+    }
+
+    public ProductListPageServlet(ProductDao dao) {
+        this.dao = dao;
+    }
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        dao = ArrayListProductDao.getInstance();
+
+        if (dao == null) dao = ArrayListProductDao.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String query = request.getParameter("query");
-        String field = request.getParameter("sort");
-        String order = request.getParameter("order");
-        request.setAttribute("products", dao.findProducts(query,
-                Optional.ofNullable(field).map(SortField::valueOf).orElse(null),
-                Optional.ofNullable(order).map(SortOrder::valueOf).orElse(null)));
+        // Todo: !! ПЕРЕПИСАТЬ ВСЕ ТЕСТЫ ПОД ЧИСТУЮ
+        request.setAttribute(
+                "products",
+                dao.findProducts(
+                        request.getParameter(QUERY),
+                        Optional.ofNullable(request.getParameter(SORT)).map(SortField::getField).orElse(null),
+                        Optional.ofNullable(request.getParameter(ORDER)).map(SortOrder::getOrder).orElse(null)
+                )
+        );
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }

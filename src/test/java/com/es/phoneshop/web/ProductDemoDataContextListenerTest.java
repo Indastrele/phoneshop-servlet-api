@@ -1,7 +1,9 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.product.SortField;
+import com.es.phoneshop.model.product.SortOrder;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletContextEvent;
 import org.junit.Before;
@@ -9,6 +11,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -21,11 +26,35 @@ public class ProductDemoDataContextListenerTest {
     @Mock
     private ProductDao dao;
 
-    private ProductDemoDataContextListener demoDataContextListener = new ProductDemoDataContextListener();
+    private ProductDemoDataContextListener demoDataContextListener;
 
     @Before
     public void setup() {
-        dao = ArrayListProductDao.getInstance();
+        dao = new ProductDao() {
+            private List<Product> products = new ArrayList<>();
+
+            @Override
+            public Product getProduct(Long id) {
+                return null;
+            }
+
+            @Override
+            public List<Product> findProducts(String query, SortField field, SortOrder order) {
+                return products;
+            }
+
+            @Override
+            public void save(Product product) {
+                products.add(product);
+            }
+
+            @Override
+            public void delete(Long id) {
+
+            }
+        };
+
+        demoDataContextListener = new ProductDemoDataContextListener(dao);
     }
 
     @Test

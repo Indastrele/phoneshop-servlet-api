@@ -20,6 +20,10 @@ public class ProductDemoDataContextListener implements ServletContextListener {
         this.dao = ArrayListProductDao.getInstance();
     }
 
+    public ProductDemoDataContextListener(ProductDao dao) {
+        this.dao = dao;
+    }
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         boolean insertDemoData = Boolean.valueOf(sce.getServletContext().getInitParameter("insertDemoData"));
@@ -37,7 +41,8 @@ public class ProductDemoDataContextListener implements ServletContextListener {
         final Currency usd = Currency.getInstance("USD");
         List<Product> result = new ArrayList<>();
 
-        result.add(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), LocalDate.now()))));
+        // Докинуть дополнительных дат для цен
+        result.add(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), LocalDate.now()), new ProductPriceChangeDate(new BigDecimal(110), LocalDate.now().minusDays(2)))));
         result.add(new Product("sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(200), LocalDate.now()))));
         result.add(new Product("sgs3", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(300), LocalDate.now()))));
         result.add(new Product("iphone", "Apple iPhone", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(200), LocalDate.now()))));

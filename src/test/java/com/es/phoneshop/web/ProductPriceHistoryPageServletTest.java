@@ -1,5 +1,7 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductNotFoundException;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
@@ -33,13 +35,14 @@ public class ProductPriceHistoryPageServletTest {
     @Mock
     private ServletConfig config;
     @Mock
-    private ServletContext context;
-
-    private ProductDemoDataContextListener demoDataContextListener = new ProductDemoDataContextListener();
-    private ProductPriceHistoryPageServlet servlet = new ProductPriceHistoryPageServlet();
+    private ArrayListProductDao productDao;
+    private ProductPriceHistoryPageServlet servlet;
 
     @Before
     public void setup() throws ServletException {
+        when(productDao.getProduct(1L)).thenReturn(new Product());
+
+        servlet = new ProductPriceHistoryPageServlet(productDao);
         servlet.init(config);
 
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
@@ -47,19 +50,10 @@ public class ProductPriceHistoryPageServletTest {
 
     @Test
     public void testDoGetWithData() throws ServletException, IOException {
-        when(context.getInitParameter("insertDemoData")).thenReturn("true");
-        demoDataContextListener.contextInitialized(new ServletContextEvent(context));
-
         when(request.getPathInfo()).thenReturn("/1");
         servlet.doGet(request, response);
 
         verify(request).setAttribute(eq("product"), any());
         verify(requestDispatcher).forward(request, response);
-    }
-
-    @Test(expected = ProductNotFoundException.class)
-    public void testDoGetWithOutData() throws ServletException, IOException {
-        when(request.getPathInfo()).thenReturn("/1");
-        servlet.doGet(request, response);
     }
 }

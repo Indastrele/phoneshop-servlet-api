@@ -1,6 +1,10 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.ProductNotFoundException;
+import com.es.phoneshop.model.product.ProductPriceChangeDate;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
@@ -15,6 +19,9 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -33,13 +40,15 @@ public class ProductDetailsPageServletTest {
     @Mock
     private ServletConfig config;
     @Mock
-    private ServletContext context;
+    private ArrayListProductDao productDao;
 
-    private ProductDemoDataContextListener demoDataContextListener = new ProductDemoDataContextListener();
-    private ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
+    private ProductDetailsPageServlet servlet;
 
     @Before
     public void setup() throws ServletException {
+        when(productDao.getProduct(1L)).thenReturn(new Product());
+
+        servlet = new ProductDetailsPageServlet(productDao);
         servlet.init(config);
 
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
@@ -47,19 +56,10 @@ public class ProductDetailsPageServletTest {
 
     @Test
     public void testDoGetWithData() throws ServletException, IOException {
-        when(context.getInitParameter("insertDemoData")).thenReturn("true");
-        demoDataContextListener.contextInitialized(new ServletContextEvent(context));
-
         when(request.getPathInfo()).thenReturn("/1");
         servlet.doGet(request, response);
 
         verify(request).setAttribute(eq("product"), any());
         verify(requestDispatcher).forward(request, response);
-    }
-
-    @Test(expected = ProductNotFoundException.class)
-    public void testDoGetWithOutData() throws ServletException, IOException {
-        when(request.getPathInfo()).thenReturn("/1");
-        servlet.doGet(request, response);
     }
 }

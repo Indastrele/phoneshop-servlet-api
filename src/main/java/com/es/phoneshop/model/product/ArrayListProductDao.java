@@ -3,12 +3,15 @@ package com.es.phoneshop.model.product;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ArrayListProductDao implements ProductDao {
     private static ProductDao instance;
+    
+    private TreeMap<Long, Integer> relevance = new TreeMap<>();
 
     public static synchronized ProductDao getInstance() {
         if (instance == null) {
@@ -34,7 +37,7 @@ public class ArrayListProductDao implements ProductDao {
             return  products.stream()
                     .filter(product -> id.equals(product.getId()))
                     .findFirst()
-                    .orElse(null);
+                    .orElseThrow(() -> new ProductNotFoundException(id));
         }
         finally {
             readWriteLock.readLock().unlock();
@@ -45,36 +48,31 @@ public class ArrayListProductDao implements ProductDao {
     public List<Product> findProducts(String query, SortField field, SortOrder order) {
         readWriteLock.readLock().lock();
         try {
+            if ((field == null || order == null) && query == null) {
+                return getProducts();
+            }
+
             Comparator<Product> comparator;
 
-            if (field == null && order == null) {
-                comparator = Comparator.comparingInt(product -> {
-                    if (query == null) {
-                        return 0;
-                    }
+            if (field == null || order == null) {
+                relevance.clear();
+                products.stream()
+                        .forEach(product -> relevance.put(product.getId(), calculateProductRelevance(product, query)));
 
-                    List<String> tokenizedQuery = List.of(query.toLowerCase().split(" "));
-                    List<String> description = List.of(product.getDescription().toLowerCase().split(" "));
-                    Set<String> intersections = description.stream()
-                            .distinct()
-                            .filter(tokenizedQuery::contains)
-                            .collect(Collectors.toSet());
-
-                    return tokenizedQuery.size() - intersections.size();
-                });
+                comparator = Comparator.comparingInt(product -> relevance.get(product.getId()));
 
                 return getFilteredProducts(comparator, query);
             }
 
             comparator = Comparator.comparing(product -> {
-               if (SortField.description == field) {
+               if (SortField.DESCRIPTION == field) {
                    return (Comparable) product.getDescription();
                } else {
                    return (Comparable) product.getPrice();
                }
             });
 
-            if (order == SortOrder.desc) {
+            if (order == SortOrder.DESC) {
                 comparator = comparator.reversed();
             }
 
@@ -85,12 +83,16 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
+    private List<Product> getProducts() {
+        return products.stream()
+                .filter(product -> product.getPrice() != null && product.getStock() != 0)
+                .toList();
+    }
+
     private List<Product> getFilteredProducts(Comparator<Product> comparator, String query) {
         return products.stream()
                 .filter(product -> {
-                    if (product.getPrice() == null || product.getStock() == 0) {
-                        return false;
-                    }
+                    if (product.getPrice() == null || product.getStock() == 0) return false;
 
                     if (query == null || query.isEmpty()) return true;
 
@@ -100,6 +102,16 @@ public class ArrayListProductDao implements ProductDao {
                 })
                 .sorted(comparator)
                 .collect(Collectors.toList());
+    }
+
+    private int calculateProductRelevance(Product product, String query) {
+        List<String> tokenizedQuery = List.of(query.toLowerCase().split(" "));
+        List<String> intersections = Stream.of(product.getDescription().toLowerCase().split(" "))
+                .distinct()
+                .filter(tokenizedQuery::contains)
+                .toList();
+
+        return tokenizedQuery.size() - intersections.size();
     }
 
     @Override
@@ -114,9 +126,6 @@ public class ArrayListProductDao implements ProductDao {
             }
 
             var oldProduct = getProduct(id);
-            if (oldProduct == null) {
-                throw new ProductNotFoundException(id);
-            }
 
             var index = products.indexOf(oldProduct);
             product.setId(oldProduct.getId());

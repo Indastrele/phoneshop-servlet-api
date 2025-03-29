@@ -1,9 +1,9 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.Product;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletContext;
-import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -32,16 +33,15 @@ public class ProductListPageServletTest {
     @Mock
     private ServletConfig config;
     @Mock
-    private ServletContext context;
+    private ArrayListProductDao productDao;
 
-    private ProductDemoDataContextListener demoDataContextListener = new ProductDemoDataContextListener();
-
-    private ProductListPageServlet servlet = new ProductListPageServlet();
+    private ProductListPageServlet servlet;
 
     @Before
     public void setup() throws ServletException {
-        when(context.getInitParameter("insertDemoData")).thenReturn("true");
-        demoDataContextListener.contextInitialized(new ServletContextEvent(context));
+        when(productDao.findProducts(any(), any(), any())).thenReturn(new ArrayList<>());
+
+        servlet = new ProductListPageServlet(productDao);
 
         servlet.init(config);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);

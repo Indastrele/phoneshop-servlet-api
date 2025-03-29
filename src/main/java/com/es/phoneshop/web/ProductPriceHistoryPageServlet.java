@@ -13,12 +13,21 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class ProductPriceHistoryPageServlet extends HttpServlet {
+    private static final String PRODUCT = "product";
     private ProductDao dao;
+
+    public ProductPriceHistoryPageServlet() {
+    }
+
+    public ProductPriceHistoryPageServlet(ProductDao dao) {
+        this.dao = dao;
+    }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        dao = ArrayListProductDao.getInstance();
+
+        if (dao == null) dao = ArrayListProductDao.getInstance();
     }
 
     @Override
@@ -26,11 +35,8 @@ public class ProductPriceHistoryPageServlet extends HttpServlet {
             throws ServletException, IOException {
         String id = request.getPathInfo();
         Product product = dao.getProduct(Long.valueOf(id.substring(1)));
-        if (product == null) {
-            throw new ProductNotFoundException(Long.valueOf(id.substring(1)));
-        }
 
-        request.setAttribute("product", product);
+        request.setAttribute(PRODUCT, product);
         request.getRequestDispatcher("/WEB-INF/pages/productPriceHistoryPage.jsp").forward(request, response);
     }
 }
