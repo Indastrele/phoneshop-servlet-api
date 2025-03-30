@@ -47,7 +47,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Product product = dao.getProduct(getIdFromPath(request));
 
         request.setAttribute(PRODUCT, product);
-        request.setAttribute(CART, cartService.getCart());
+        request.setAttribute(CART, cartService == null ? null : cartService.getCart(request));
         request.getRequestDispatcher("/WEB-INF/pages/productPage.jsp").forward(request, response);
     }
 
@@ -57,7 +57,11 @@ public class ProductDetailsPageServlet extends HttpServlet {
         String quantity = request.getParameter(QUANTITY);
         Locale locale = request.getLocale();
         try {
-            cartService.add(getIdFromPath(request), NumberFormat.getInstance(locale).parse(quantity).intValue());
+            cartService.add(
+                    cartService.getCart(request),
+                    getIdFromPath(request),
+                    NumberFormat.getInstance(locale).parse(quantity).intValue()
+            );
         } catch (ParseException ex) {
             request.setAttribute(ERROR, "Not a number");
 

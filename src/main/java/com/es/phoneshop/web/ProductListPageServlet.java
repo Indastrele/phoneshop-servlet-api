@@ -1,5 +1,7 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.cart.CartService;
+import com.es.phoneshop.model.cart.DefaultCartService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
@@ -19,7 +21,10 @@ public class ProductListPageServlet extends HttpServlet {
     private static final String QUERY = "query";
     private static final String ORDER = "order";
     private static final String SORT = "sort";
+    private static final String PRODUCTS = "products";
+    private static final String CART = "cart";
     private ProductDao dao;
+    private CartService cartService;
 
     public ProductListPageServlet() {
     }
@@ -32,19 +37,21 @@ public class ProductListPageServlet extends HttpServlet {
         super.init(config);
 
         if (dao == null) dao = ArrayListProductDao.getInstance();
+        if (cartService == null) cartService = DefaultCartService.getInstance();
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Todo: !! ПЕРЕПИСАТЬ ВСЕ ТЕСТЫ ПОД ЧИСТУЮ
         request.setAttribute(
-                "products",
+                PRODUCTS,
                 dao.findProducts(
                         request.getParameter(QUERY),
                         Optional.ofNullable(request.getParameter(SORT)).map(SortField::getField).orElse(null),
                         Optional.ofNullable(request.getParameter(ORDER)).map(SortOrder::getOrder).orElse(null)
                 )
         );
+        request.setAttribute(CART, cartService == null ? null : cartService.getCart(request));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }

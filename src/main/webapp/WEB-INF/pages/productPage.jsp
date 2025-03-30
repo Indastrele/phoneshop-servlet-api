@@ -4,20 +4,9 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
-<jsp:useBean id="cart" type="com.es.phoneshop.model.cart.Cart" scope="request"/>
 <tags:master pageTitle="Product List">
   <form action="${pageContext.request.contextPath}/products/${product.id}" method="post">
-    <p>Cart</p>
-    <table>
-      <tr>
-        <c:forEach var="item" items="${cart.cart}">
-          <td>
-            <p>${item.product.description}</p>
-            <p>${item.quantity}</p>
-          </td>
-        </c:forEach>
-      </tr>
-    </table>
+    <tags:cart />
 
     <c:if test="${not empty param.message and empty error}">
       <p style="color: green;">${param.message}</p>

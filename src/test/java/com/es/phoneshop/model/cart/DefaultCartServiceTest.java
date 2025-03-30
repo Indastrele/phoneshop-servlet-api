@@ -3,6 +3,8 @@ package com.es.phoneshop.model.cart;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.ProductPriceChangeDate;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +23,8 @@ public class DefaultCartServiceTest {
     @Mock
     private ProductDao dao;
 
+    private final Cart cart = new Cart();
+
     private CartService cartService;
 
     @Before
@@ -32,17 +36,17 @@ public class DefaultCartServiceTest {
 
     @Test
     public void testAdd() throws NotEnoughStockException {
-        assertTrue(cartService.getCart().getCart().stream().noneMatch(item -> item.getProduct().getId() == 1L));
+        assertTrue(cart.getCart().stream().noneMatch(item -> item.getProduct().getId() == 1L));
 
-        cartService.add(1L, 1);
+        cartService.add(cart, 1L, 1);
 
-        assertTrue(cartService.getCart().getCart().stream().anyMatch(item -> item.getProduct().getId() == 1L));
+        assertTrue(cart.getCart().stream().anyMatch(item -> item.getProduct().getId() == 1L));
     }
 
     @Test(expected = NotEnoughStockException.class)
     public void testAddWithOutEnoughStock() throws NotEnoughStockException {
-        assertTrue(cartService.getCart().getCart().stream().noneMatch(item -> item.getProduct().getId() == 1L));
+        assertTrue(cart.getCart().stream().noneMatch(item -> item.getProduct().getId() == 1L));
 
-        cartService.add(1L, 3);
+        cartService.add(cart, 1L, 3);
     }
 }

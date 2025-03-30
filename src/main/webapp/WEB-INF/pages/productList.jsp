@@ -5,6 +5,8 @@
 
 <jsp:useBean id="products" type="java.util.List" scope="request"/>
 <tags:master pageTitle="Product List">
+  <tags:cart />
+
   <p>
     Welcome to Expert-Soft training!
   </p>

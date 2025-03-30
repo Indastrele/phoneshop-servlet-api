@@ -2,10 +2,12 @@ package com.es.phoneshop.model.cart;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DefaultCartService implements CartService{
+    private static final String CART_SESSION_ATTRIBUTE = DefaultCartService.class.getName() + ".cart";
     private static DefaultCartService instance;
 
     public static synchronized DefaultCartService getInstance() {
@@ -16,11 +18,11 @@ public class DefaultCartService implements CartService{
         return instance;
     }
 
-    private Cart cart  = new Cart();
     private ProductDao dao;
     private ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     private DefaultCartService() {
+        this.dao = ArrayListProductDao.getInstance();
     }
 
     protected DefaultCartService(ProductDao dao) {
@@ -28,10 +30,17 @@ public class DefaultCartService implements CartService{
     }
 
     @Override
-    public Cart getCart() {
+    public Cart getCart(HttpServletRequest request) {
         rwLock.readLock().lock();
         try {
-            return this.cart;
+            Cart cart = (Cart) request.getSession().getAttribute(CART_SESSION_ATTRIBUTE);
+
+            if (cart == null) {
+                cart = new Cart();
+                request.getSession().setAttribute(CART_SESSION_ATTRIBUTE, cart);
+            }
+
+            return cart;
         }
         finally {
             rwLock.readLock().unlock();
@@ -39,14 +48,14 @@ public class DefaultCartService implements CartService{
     }
 
     @Override
-    public void add(Long productId, int quantity) throws NotEnoughStockException {
+    public void add(Cart cart, Long productId, int quantity) throws NotEnoughStockException {
         rwLock.writeLock().lock();
         try {
             int quantityInCart = cart.getCart().stream()
                     .filter(item -> productId.equals(item.getProduct().getId()))
-                    .map(CartItem::getQuantity)
-                    .mapToInt(Integer::intValue)
-                    .sum();
+                    .findFirst()
+                    .orElse(new CartItem(null, 0))
+                    .getQuantity();
             int stock = dao.getProduct(productId).getStock();
 
             if (quantity > stock - quantityInCart) {
