@@ -4,13 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -27,14 +25,14 @@ public class ArrayListProductDaoTest
 
     @Test
     public void testFindProductsNoResults() {
-        assertFalse(productDao.findProducts(null, null, null).isEmpty());
+        assertTrue(productDao.findProducts(null, null, null).isEmpty());
     }
 
     @Test
     public void testSaveProduct() {
         Currency usd = Currency.getInstance("USD");
 
-        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), LocalDate.now())));
+        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), null)));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(product::equals));
 
@@ -51,7 +49,7 @@ public class ArrayListProductDaoTest
     public void testZeroStockProduct() {
         Currency usd = Currency.getInstance("USD");
 
-        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), LocalDate.now())));
+        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), null)));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(product::equals));
 
@@ -91,7 +89,7 @@ public class ArrayListProductDaoTest
     public void testDeleteProduct() {
         Currency usd = Currency.getInstance("USD");
 
-        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), LocalDate.now())));
+        Product product = new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), null)));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(product::equals));
 
@@ -111,11 +109,11 @@ public class ArrayListProductDaoTest
         Currency usd = Currency.getInstance("USD");
 
         List<Product> products = new ArrayList<>();
-        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), LocalDate.now()))));
+        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(0)::equals));
 
-        products.add(new Product("test2", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(300), LocalDate.now()))));
+        products.add(new Product("test2", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(300), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(1)::equals));
 
@@ -133,15 +131,15 @@ public class ArrayListProductDaoTest
         Currency usd = Currency.getInstance("USD");
 
         List<Product> products = new ArrayList<>();
-        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), LocalDate.now()))));
+        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(0)::equals));
 
-        products.add(new Product("test2", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(300), LocalDate.now()))));
+        products.add(new Product("test2", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(300), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(1)::equals));
 
-        products.add(new Product("iphone6", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(1000), LocalDate.now()))));
+        products.add(new Product("iphone6", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(1000), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(2)::equals));
 
@@ -162,11 +160,11 @@ public class ArrayListProductDaoTest
         Currency usd = Currency.getInstance("USD");
 
         List<Product> products = new ArrayList<>();
-        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), LocalDate.now()))));
+        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(0)::equals));
 
-        products.add(new Product("test2", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(300), LocalDate.now()))));
+        products.add(new Product("test2", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(300), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(1)::equals));
 
@@ -185,11 +183,11 @@ public class ArrayListProductDaoTest
         Currency usd = Currency.getInstance("USD");
 
         List<Product> products = new ArrayList<>();
-        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), LocalDate.now()))));
+        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(0)::equals));
 
-        products.add(new Product("test2", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(300), LocalDate.now()))));
+        products.add(new Product("test2", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(300), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(1)::equals));
 
@@ -208,15 +206,15 @@ public class ArrayListProductDaoTest
         Currency usd = Currency.getInstance("USD");
 
         List<Product> products = new ArrayList<>();
-        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), LocalDate.now()))));
+        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(0)::equals));
 
-        products.add(new Product("test2", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(300), LocalDate.now()))));
+        products.add(new Product("test2", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(300), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(1)::equals));
 
-        products.add(new Product("test3", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(1000), LocalDate.now()))));
+        products.add(new Product("test3", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(1000), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(2)::equals));
 
@@ -242,15 +240,15 @@ public class ArrayListProductDaoTest
         Currency usd = Currency.getInstance("USD");
 
         List<Product> products = new ArrayList<>();
-        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), LocalDate.now()))));
+        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(0)::equals));
 
-        products.add(new Product("test2", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(300), LocalDate.now()))));
+        products.add(new Product("test2", "Samsung Galaxy S III", new BigDecimal(300), usd, 5, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20III.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(300), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(1)::equals));
 
-        products.add(new Product("test3", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(1000), LocalDate.now()))));
+        products.add(new Product("test3", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(1000), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(2)::equals));
 
@@ -276,11 +274,11 @@ public class ArrayListProductDaoTest
         Currency usd = Currency.getInstance("USD");
 
         List<Product> products = new ArrayList<>();
-        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), LocalDate.now()))));
+        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(0)::equals));
 
-        products.add(new Product("test2", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(1000), LocalDate.now()))));
+        products.add(new Product("test2", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(1000), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(1)::equals));
 
@@ -302,11 +300,11 @@ public class ArrayListProductDaoTest
         Currency usd = Currency.getInstance("USD");
 
         List<Product> products = new ArrayList<>();
-        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), LocalDate.now()))));
+        products.add(new Product("test", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(100), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(0)::equals));
 
-        products.add(new Product("test2", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(1000), LocalDate.now()))));
+        products.add(new Product("test2", "Apple iPhone 6", new BigDecimal(1000), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Apple/Apple%20iPhone%206.jpg", List.of(new ProductPriceChangeDate(new BigDecimal(1000), null))));
 
         assertTrue(productDao.findProducts(null, null, null).stream().noneMatch(products.get(1)::equals));
 
