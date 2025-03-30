@@ -30,6 +30,10 @@ public class ArrayListProductDao implements ProductDao {
 
     }
 
+    protected ArrayListProductDao(ArrayList<Product> products) {
+        this.products = products;
+    }
+
     @Override
     public Product getProduct(Long id) {
         readWriteLock.readLock().lock();

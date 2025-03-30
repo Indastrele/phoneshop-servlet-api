@@ -3,8 +3,9 @@ package com.es.phoneshop.web;
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.DefaultCartService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.DefaultRecentlyViewedProductsService;
 import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.product.RecentlyViewedProductsService;
 import com.es.phoneshop.model.product.SortField;
 import com.es.phoneshop.model.product.SortOrder;
 import jakarta.servlet.ServletConfig;
@@ -14,7 +15,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Optional;
 
 public class ProductListPageServlet extends HttpServlet {
@@ -23,8 +23,10 @@ public class ProductListPageServlet extends HttpServlet {
     private static final String SORT = "sort";
     private static final String PRODUCTS = "products";
     private static final String CART = "cart";
+    private static final String RECENTLY_VIEWED = "recentlyViewed";
     private ProductDao dao;
     private CartService cartService;
+    private RecentlyViewedProductsService recentlyViewedProductsService;
 
     public ProductListPageServlet() {
     }
@@ -38,11 +40,14 @@ public class ProductListPageServlet extends HttpServlet {
 
         if (dao == null) dao = ArrayListProductDao.getInstance();
         if (cartService == null) cartService = DefaultCartService.getInstance();
+
+        if (recentlyViewedProductsService == null) {
+            recentlyViewedProductsService = DefaultRecentlyViewedProductsService.getInstance();
+        }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Todo: !! ПЕРЕПИСАТЬ ВСЕ ТЕСТЫ ПОД ЧИСТУЮ
         request.setAttribute(
                 PRODUCTS,
                 dao.findProducts(
@@ -52,6 +57,9 @@ public class ProductListPageServlet extends HttpServlet {
                 )
         );
         request.setAttribute(CART, cartService == null ? null : cartService.getCart(request));
+        request.setAttribute(
+                RECENTLY_VIEWED,
+                recentlyViewedProductsService == null ? null : recentlyViewedProductsService.getProducts(request));
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }

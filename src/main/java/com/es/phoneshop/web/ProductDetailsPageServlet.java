@@ -4,8 +4,10 @@ import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.DefaultCartService;
 import com.es.phoneshop.model.cart.NotEnoughStockException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.DefaultRecentlyViewedProductsService;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.product.RecentlyViewedProductsService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -23,8 +25,10 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private static final String MESSAGE = "message";
     private static final String QUANTITY = "quantity";
     private static final String CART = "cart";
+    private static final String RECENTLY_VIEWED = "recentlyViewed";
     private ProductDao dao;
     private CartService cartService;
+    private RecentlyViewedProductsService recentlyViewedProductsService;
 
     public ProductDetailsPageServlet() {
     }
@@ -38,16 +42,24 @@ public class ProductDetailsPageServlet extends HttpServlet {
         super.init(config);
 
         if (dao == null) dao = ArrayListProductDao.getInstance();
-        cartService = DefaultCartService.getInstance();
+        if (cartService == null) cartService = DefaultCartService.getInstance();
+
+        if (recentlyViewedProductsService == null) {
+            recentlyViewedProductsService = DefaultRecentlyViewedProductsService.getInstance();
+        }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Product product = dao.getProduct(getIdFromPath(request));
+        recentlyViewedProductsService.add(recentlyViewedProductsService.getProducts(request), product.getId());
 
         request.setAttribute(PRODUCT, product);
         request.setAttribute(CART, cartService == null ? null : cartService.getCart(request));
+        request.setAttribute(
+                RECENTLY_VIEWED,
+                recentlyViewedProductsService == null ? null : recentlyViewedProductsService.getProducts(request));
         request.getRequestDispatcher("/WEB-INF/pages/productPage.jsp").forward(request, response);
     }
 

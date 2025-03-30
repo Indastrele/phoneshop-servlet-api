@@ -59,4 +59,6 @@
     <br>
     <button>Add to cart</button>
   </form>
+
+  <tags:recentlyViewed />
 </tags:master>

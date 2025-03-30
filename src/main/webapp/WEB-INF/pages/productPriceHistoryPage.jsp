@@ -36,4 +36,6 @@
       </tr>
     </c:forEach>
   </table>
+
+  <tags:recentlyViewed />
 </tags:master>
