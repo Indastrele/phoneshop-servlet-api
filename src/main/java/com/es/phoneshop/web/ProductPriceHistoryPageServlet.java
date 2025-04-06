@@ -21,6 +21,9 @@ public class ProductPriceHistoryPageServlet extends HttpServlet {
     private ProductDao dao;
     private RecentlyViewedProductsService recentlyViewedProductsService;
 
+    public ProductPriceHistoryPageServlet() {
+    }
+
     public ProductPriceHistoryPageServlet(ProductDao dao, RecentlyViewedProductsService recentlyViewedProductsService) {
         this.dao = dao;
         this.recentlyViewedProductsService = recentlyViewedProductsService;

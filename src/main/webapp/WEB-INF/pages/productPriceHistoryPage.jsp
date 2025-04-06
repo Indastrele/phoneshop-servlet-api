@@ -37,5 +37,7 @@
     </c:forEach>
   </table>
 
-  <tags:recentlyViewed />
+  <p>
+    <tags:recentlyViewed />
+  </p>
 </tags:master>

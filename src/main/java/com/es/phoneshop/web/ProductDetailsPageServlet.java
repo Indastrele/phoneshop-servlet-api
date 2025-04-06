@@ -30,6 +30,9 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private CartService cartService;
     private RecentlyViewedProductsService recentlyViewedProductsService;
 
+    public ProductDetailsPageServlet() {
+    }
+
     public ProductDetailsPageServlet(
             ProductDao dao,
             CartService cartService,

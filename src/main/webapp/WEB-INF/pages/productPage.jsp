@@ -60,5 +60,7 @@
     <button>Add to cart</button>
   </form>
 
-  <tags:recentlyViewed />
+  <p>
+    <tags:recentlyViewed />
+  </p>
 </tags:master>

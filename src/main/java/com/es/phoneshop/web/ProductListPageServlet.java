@@ -28,6 +28,9 @@ public class ProductListPageServlet extends HttpServlet {
     private CartService cartService;
     private RecentlyViewedProductsService recentlyViewedProductsService;
 
+    public ProductListPageServlet() {
+    }
+
     public ProductListPageServlet(
             ProductDao dao,
             CartService cartService,

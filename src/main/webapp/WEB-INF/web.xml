@@ -45,5 +45,14 @@
     <exception-type>com.es.phoneshop.model.product.ProductNotFoundException</exception-type>
     <location>/WEB-INF/pages/productNotFound.jsp</location>
   </error-page>
+
+  <servlet>
+    <servlet-name>cartPage</servlet-name>
+    <servlet-class>com.es.phoneshop.web.CartPageServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>cartPage</servlet-name>
+    <url-pattern>/cart</url-pattern>
+  </servlet-mapping>
   
 </web-app>
