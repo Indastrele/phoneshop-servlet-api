@@ -54,5 +54,14 @@
     <servlet-name>cartPage</servlet-name>
     <url-pattern>/cart</url-pattern>
   </servlet-mapping>
+
+  <servlet>
+    <servlet-name>deleteCartItem</servlet-name>
+    <servlet-class>com.es.phoneshop.web.DeleteCartItemServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>deleteCartItem</servlet-name>
+    <url-pattern>/cart/deleteItem/*</url-pattern>
+  </servlet-mapping>
   
 </web-app>

@@ -44,8 +44,7 @@ public class DefaultCartService implements CartService{
             }
 
             return cart;
-        }
-        finally {
+        } finally {
             rwLock.readLock().unlock();
         }
     }
@@ -76,8 +75,7 @@ public class DefaultCartService implements CartService{
             }
 
             cart.getCart().add(new CartItem(dao.getProduct(productId), quantity));
-        }
-        finally {
+        } finally {
             rwLock.writeLock().unlock();
         }
     }
@@ -99,8 +97,17 @@ public class DefaultCartService implements CartService{
                     .get()
                     .setQuantity(quantity);
 
+        } finally {
+            rwLock.writeLock().unlock();
         }
-        finally {
+    }
+
+    @Override
+    public void delete(Cart cart, Long productId) {
+        rwLock.writeLock().lock();
+        try {
+            cart.getCart().removeIf(item -> productId.equals(item.getProduct().getId()));
+        } finally {
             rwLock.writeLock().unlock();
         }
     }
