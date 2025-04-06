@@ -1,11 +1,14 @@
 package com.es.phoneshop.model.cart;
 
 import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+import java.math.BigDecimal;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 public class DefaultCartService implements CartService{
     private static final String CART_SESSION_ATTRIBUTE = DefaultCartService.class.getName() + ".cart";
@@ -70,11 +73,13 @@ public class DefaultCartService implements CartService{
                         .findFirst()
                         .get()
                         .setQuantity(quantity + quantityInCart);
+                recalculateCart(cart);
 
                 return;
             }
 
             cart.getCart().add(new CartItem(dao.getProduct(productId), quantity));
+            recalculateCart(cart);
         } finally {
             rwLock.writeLock().unlock();
         }
@@ -97,6 +102,8 @@ public class DefaultCartService implements CartService{
                     .get()
                     .setQuantity(quantity);
 
+            recalculateCart(cart);
+
         } finally {
             rwLock.writeLock().unlock();
         }
@@ -107,8 +114,24 @@ public class DefaultCartService implements CartService{
         rwLock.writeLock().lock();
         try {
             cart.getCart().removeIf(item -> productId.equals(item.getProduct().getId()));
+            recalculateCart(cart);
         } finally {
             rwLock.writeLock().unlock();
         }
+    }
+
+    private void recalculateCart(Cart cart) {
+        cart.setTotalQuantity(cart.getCart().stream()
+                .map(CartItem::getQuantity)
+                .mapToInt(Integer::intValue)
+                .sum()
+        );
+
+        cart.setTotalPrice(cart.getCart().stream()
+                .map(cartItem -> cartItem.getProduct()
+                        .getPrice()
+                        .multiply(BigDecimal.valueOf(cartItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add));
+
     }
 }
