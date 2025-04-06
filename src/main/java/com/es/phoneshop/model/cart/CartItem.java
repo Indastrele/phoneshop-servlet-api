@@ -3,7 +3,7 @@ package com.es.phoneshop.model.cart;
 import com.es.phoneshop.model.product.Product;
 
 public class CartItem {
-    private Product product;
+    private final Product product;
 
     private int quantity;
 

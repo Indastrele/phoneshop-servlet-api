@@ -30,11 +30,13 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private CartService cartService;
     private RecentlyViewedProductsService recentlyViewedProductsService;
 
-    public ProductDetailsPageServlet() {
-    }
-
-    public ProductDetailsPageServlet(ProductDao dao) {
+    public ProductDetailsPageServlet(
+            ProductDao dao,
+            CartService cartService,
+            RecentlyViewedProductsService recentlyViewedProductsService) {
         this.dao = dao;
+        this.cartService = cartService;
+        this.recentlyViewedProductsService = recentlyViewedProductsService;
     }
 
     @Override
@@ -80,14 +82,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
             doGet(request, response);
             return;
         } catch (NotEnoughStockException ex) {
-            request.setAttribute(
-                    ERROR,
-                    "Not enough stock(available: "
-                            + ex.getStockAvailable()
-                            + "; requested: "
-                            + ex.getRequestedQuantity()
-                            + ")"
-            );
+            request.setAttribute(ERROR, ex.getMessage());
 
             doGet(request, response);
             return;

@@ -28,11 +28,13 @@ public class ProductListPageServlet extends HttpServlet {
     private CartService cartService;
     private RecentlyViewedProductsService recentlyViewedProductsService;
 
-    public ProductListPageServlet() {
-    }
-
-    public ProductListPageServlet(ProductDao dao) {
+    public ProductListPageServlet(
+            ProductDao dao,
+            CartService cartService,
+            RecentlyViewedProductsService recentlyViewedProductsService) {
         this.dao = dao;
+        this.cartService = cartService;
+        this.recentlyViewedProductsService = recentlyViewedProductsService;
     }
 
     public void init(ServletConfig config) throws ServletException {

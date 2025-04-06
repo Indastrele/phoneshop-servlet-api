@@ -3,12 +3,13 @@ package com.es.phoneshop.model.cart;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.ProductDao;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DefaultCartService implements CartService{
     private static final String CART_SESSION_ATTRIBUTE = DefaultCartService.class.getName() + ".cart";
-    private static DefaultCartService instance;
+    private static volatile DefaultCartService instance;
 
     public static synchronized DefaultCartService getInstance() {
         if (instance == null) {
@@ -18,8 +19,8 @@ public class DefaultCartService implements CartService{
         return instance;
     }
 
-    private ProductDao dao;
-    private ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
+    private final ProductDao dao;
+    private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     private DefaultCartService() {
         this.dao = ArrayListProductDao.getInstance();
@@ -33,11 +34,13 @@ public class DefaultCartService implements CartService{
     public Cart getCart(HttpServletRequest request) {
         rwLock.readLock().lock();
         try {
-            Cart cart = (Cart) request.getSession().getAttribute(CART_SESSION_ATTRIBUTE);
+            HttpSession session = request.getSession();
+
+            Cart cart = (Cart) session.getAttribute(CART_SESSION_ATTRIBUTE);
 
             if (cart == null) {
                 cart = new Cart();
-                request.getSession().setAttribute(CART_SESSION_ATTRIBUTE, cart);
+                session.setAttribute(CART_SESSION_ATTRIBUTE, cart);
             }
 
             return cart;

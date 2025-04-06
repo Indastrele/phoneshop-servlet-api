@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public class RecentlyViewedProducts {
-    private Deque<Product> products;
+    private final Deque<Product> products;
 
     public RecentlyViewedProducts() {
         products = new ArrayDeque<>();

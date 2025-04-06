@@ -1,6 +1,12 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.DefaultCartService;
 import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.ProductNotFoundException;
+import com.es.phoneshop.model.product.RecentlyViewedProducts;
+import com.es.phoneshop.model.product.RecentlyViewedProductsService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -14,6 +20,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -33,14 +40,24 @@ public class ProductListPageServletTest {
     private ServletConfig config;
     @Mock
     private ArrayListProductDao productDao;
+    @Mock
+    private DefaultCartService cartService;
+    @Mock
+    private RecentlyViewedProductsService recentlyViewedProductsService;
+    @Mock
+    private Cart cart;
+    @Mock
+    private RecentlyViewedProducts recentlyViewedProducts;
 
     private ProductListPageServlet servlet;
 
     @Before
     public void setup() throws ServletException {
         when(productDao.findProducts(any(), any(), any())).thenReturn(new ArrayList<>());
+        when(recentlyViewedProductsService.getProducts(request)).thenReturn(recentlyViewedProducts);
+        when(cartService.getCart(request)).thenReturn(cart);
 
-        servlet = new ProductListPageServlet(productDao);
+        servlet = new ProductListPageServlet(productDao, cartService, recentlyViewedProductsService);
 
         servlet.init(config);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);

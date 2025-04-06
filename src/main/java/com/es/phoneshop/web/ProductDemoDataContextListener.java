@@ -14,7 +14,7 @@ import java.util.Currency;
 import java.util.List;
 
 public class ProductDemoDataContextListener implements ServletContextListener {
-    private ProductDao dao;
+    private final ProductDao dao;
 
     public ProductDemoDataContextListener() {
         this.dao = ArrayListProductDao.getInstance();
@@ -26,9 +26,9 @@ public class ProductDemoDataContextListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        boolean insertDemoData = Boolean.valueOf(sce.getServletContext().getInitParameter("insertDemoData"));
+        boolean insertDemoData = Boolean.parseBoolean(sce.getServletContext().getInitParameter("insertDemoData"));
         if (insertDemoData) {
-            getSampleProductList().stream().forEach(product -> dao.save(product));
+            getSampleProductList().forEach(product -> dao.save(product));
         }
     }
 

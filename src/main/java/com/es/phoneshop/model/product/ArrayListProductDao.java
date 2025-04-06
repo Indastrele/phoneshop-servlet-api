@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ArrayListProductDao implements ProductDao {
-    private static ProductDao instance;
+    private static volatile ProductDao instance;
     
     private TreeMap<Long, Integer> relevance = new TreeMap<>();
 

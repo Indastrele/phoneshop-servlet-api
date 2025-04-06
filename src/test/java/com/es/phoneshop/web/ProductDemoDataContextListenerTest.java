@@ -31,7 +31,7 @@ public class ProductDemoDataContextListenerTest {
     @Before
     public void setup() {
         dao = new ProductDao() {
-            private List<Product> products = new ArrayList<>();
+            private final List<Product> products = new ArrayList<>();
 
             @Override
             public Product getProduct(Long id) {

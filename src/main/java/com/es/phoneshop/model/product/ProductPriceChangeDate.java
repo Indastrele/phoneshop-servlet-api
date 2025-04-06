@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class ProductPriceChangeDate {
-    private BigDecimal price;
+    private final BigDecimal price;
 
-    private LocalDate date;
+    private final LocalDate date;
 
     public ProductPriceChangeDate(BigDecimal price, LocalDate date) {
         this.price = price;

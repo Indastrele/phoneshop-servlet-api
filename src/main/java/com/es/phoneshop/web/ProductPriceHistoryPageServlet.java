@@ -5,6 +5,7 @@ import com.es.phoneshop.model.product.DefaultRecentlyViewedProductsService;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.ProductNotFoundException;
+import com.es.phoneshop.model.product.RecentlyViewedProducts;
 import com.es.phoneshop.model.product.RecentlyViewedProductsService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -20,11 +21,9 @@ public class ProductPriceHistoryPageServlet extends HttpServlet {
     private ProductDao dao;
     private RecentlyViewedProductsService recentlyViewedProductsService;
 
-    public ProductPriceHistoryPageServlet() {
-    }
-
-    public ProductPriceHistoryPageServlet(ProductDao dao) {
+    public ProductPriceHistoryPageServlet(ProductDao dao, RecentlyViewedProductsService recentlyViewedProductsService) {
         this.dao = dao;
+        this.recentlyViewedProductsService = recentlyViewedProductsService;
     }
 
     @Override

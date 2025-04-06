@@ -1,12 +1,13 @@
 package com.es.phoneshop.model.product;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DefaultRecentlyViewedProductsService implements RecentlyViewedProductsService {
     private static final String RECENTLY_VIED_ATTRIBUTE = DefaultRecentlyViewedProductsService.class.getName() + ".cart";
-    private static DefaultRecentlyViewedProductsService instance;
+    private static volatile DefaultRecentlyViewedProductsService instance;
 
     public static synchronized DefaultRecentlyViewedProductsService getInstance() {
         if (instance == null) {
@@ -16,21 +17,27 @@ public class DefaultRecentlyViewedProductsService implements RecentlyViewedProdu
         return instance;
     }
 
-    private ProductDao dao = ArrayListProductDao.getInstance();
+    private final ProductDao dao;
 
-    private ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
+    private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
 
     private DefaultRecentlyViewedProductsService(){
+        this.dao = ArrayListProductDao.getInstance();
+    }
+
+    protected DefaultRecentlyViewedProductsService(ProductDao dao) {
+        this.dao = dao;
     }
 
     public RecentlyViewedProducts getProducts(HttpServletRequest request) {
         rwLock.readLock().lock();
         try {
-            var products = (RecentlyViewedProducts) request.getSession().getAttribute(RECENTLY_VIED_ATTRIBUTE);
+            HttpSession session = request.getSession();
+            var products = (RecentlyViewedProducts) session.getAttribute(RECENTLY_VIED_ATTRIBUTE);
 
             if (products == null) {
                 products = new RecentlyViewedProducts();
-                request.getSession().setAttribute(RECENTLY_VIED_ATTRIBUTE, products);
+                session.setAttribute(RECENTLY_VIED_ATTRIBUTE, products);
             }
 
             return products;
