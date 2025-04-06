@@ -2,6 +2,7 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.cart.CartService;
 import com.es.phoneshop.model.cart.DefaultCartService;
+import com.es.phoneshop.model.cart.NotEnoughStockException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.DefaultRecentlyViewedProductsService;
 import com.es.phoneshop.model.product.ProductDao;
@@ -15,7 +16,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Optional;
+import java.util.TreeMap;
 
 public class ProductListPageServlet extends HttpServlet {
     private static final String QUERY = "query";
@@ -24,6 +28,9 @@ public class ProductListPageServlet extends HttpServlet {
     private static final String PRODUCTS = "products";
     private static final String CART = "cart";
     private static final String RECENTLY_VIEWED = "recentlyViewed";
+    private static final String MESSAGE = "message";
+    private static final String QUANTITY = "quantity";
+    private static final String PRODUCT_ID = "productId";
     private ProductDao dao;
     private CartService cartService;
     private RecentlyViewedProductsService recentlyViewedProductsService;
