@@ -81,4 +81,27 @@ public class DefaultCartService implements CartService{
             rwLock.writeLock().unlock();
         }
     }
+
+    @Override
+    public void update(Cart cart, Long productId, int quantity) throws NotEnoughStockException {
+        rwLock.writeLock().lock();
+        try {
+            int stock = dao.getProduct(productId).getStock();
+
+            if (quantity > stock) {
+                throw new NotEnoughStockException(productId, stock, quantity);
+            }
+
+
+            cart.getCart().stream()
+                    .filter(item -> productId.equals(item.getProduct().getId()))
+                    .findFirst()
+                    .get()
+                    .setQuantity(quantity);
+
+        }
+        finally {
+            rwLock.writeLock().unlock();
+        }
+    }
 }
