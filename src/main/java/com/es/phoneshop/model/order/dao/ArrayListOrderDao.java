@@ -30,4 +30,17 @@ public class ArrayListOrderDao extends OrderDao {
     public ArrayListOrderDao(ArrayList<Order> orders) {
         this.items = orders;
     }
+
+    @Override
+    public Order getOrderBySecureId(String secureId) {
+        rwLock.readLock().lock();
+        try {
+            return  items.stream()
+                    .filter(item -> secureId.equals(item.getSecureId()))
+                    .findFirst()
+                    .orElseThrow(() -> new OrderNotFoundException("No such order"));
+        } finally {
+            rwLock.readLock().unlock();
+        }
+    }
 }

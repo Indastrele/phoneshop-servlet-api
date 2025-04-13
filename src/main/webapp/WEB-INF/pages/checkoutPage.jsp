@@ -124,7 +124,7 @@
                     <c:set var="error" value="${errors['deliveryDate']}"/>
                     <input name="deliveryDate"
                            type="date"
-                           value="${not empty error ? param['deliveryDate'] : date}">
+                           value="${not empty error ? param['deliveryDate'] : order.deliveryDate}">
                     <c:if test="${not empty error}">
                         <span style="color: red;">${error}</span>
                     </c:if>

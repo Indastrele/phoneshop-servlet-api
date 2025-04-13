@@ -67,7 +67,8 @@ public class CheckoutPageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HashMap<String, String> errors = new HashMap<>();
-        Order order = getOrder(getCart(request));
+        Cart cart = getCart(request);
+        Order order = getOrder(cart);
 
         setParameter(request, FIRST_NAME, errors, order::setFirstName);
         setParameter(request, LAST_NAME, errors, order::setLastName);
@@ -79,14 +80,14 @@ public class CheckoutPageServlet extends HttpServlet {
 
         if (errors.isEmpty()) {
             orderService.placeOrder(order);
+            cartService.clear(cart);
             response.sendRedirect(
                     request.getContextPath()
-                    .concat( "/overview/")
-                    .concat(order.getId().toString())
+                    .concat( "/order/overview/")
+                    .concat(order.getSecureId())
             );
         } else {
             request.setAttribute(ERRORS, errors);
-            request.setAttribute(DATE, order.getDeliveryDate() == null ? null : order.getDeliveryDate().toString());
 
             doGet(request, response);
         }
@@ -136,18 +137,14 @@ public class CheckoutPageServlet extends HttpServlet {
     private void setLocalDateParameter(
             HttpServletRequest request,
             HashMap<String, String> errors,
-            Consumer<LocalDate> consumer
+            Consumer<String> consumer
     ) {
         String value = request.getParameter(DELIVERY_DATE);
-        //Locale locale = request.getLocale();
 
         if (value == null || value.length() == 0) {
             errors.put(DELIVERY_DATE, "Value is required");
         } else {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")/*.withLocale(locale)*/;
-            LocalDate date = LocalDate.parse(value, formatter);
-
-            consumer.accept(date);
+            consumer.accept(value);
         }
     }
 

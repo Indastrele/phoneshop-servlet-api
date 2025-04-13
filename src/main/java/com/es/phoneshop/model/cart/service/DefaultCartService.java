@@ -125,6 +125,17 @@ public class DefaultCartService implements CartService{
         }
     }
 
+    @Override
+    public void clear(Cart cart) {
+        rwLock.writeLock().lock();
+        try {
+            cart.getItemList().clear();
+            recalculateCart(cart);
+        } finally {
+            rwLock.writeLock().unlock();
+        }
+    }
+
     private void recalculateCart(Cart cart) {
         cart.setTotalQuantity(cart.getItemList().stream()
                 .map(CartItem::getQuantity)

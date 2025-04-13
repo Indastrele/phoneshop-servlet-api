@@ -11,6 +11,7 @@ import java.util.List;
 
 public class Order implements Serializable, DaoItem {
     private Long id;
+    private String secureId;
     private List<CartItem> itemList;
 
     private BigDecimal subtotal;
@@ -21,7 +22,7 @@ public class Order implements Serializable, DaoItem {
     private String lastName;
     private String phone;
 
-    private LocalDate deliveryDate;
+    private String deliveryDate;
     private String deliveryAddress;
 
     private PaymentMethod paymentMethod;
@@ -74,11 +75,11 @@ public class Order implements Serializable, DaoItem {
         this.phone = phone;
     }
 
-    public LocalDate getDeliveryDate() {
+    public String getDeliveryDate() {
         return deliveryDate;
     }
 
-    public void setDeliveryDate(LocalDate deliveryDate) {
+    public void setDeliveryDate(String deliveryDate) {
         this.deliveryDate = deliveryDate;
     }
 
@@ -114,5 +115,13 @@ public class Order implements Serializable, DaoItem {
 
     public void setItemList(List<CartItem> itemList) {
         this.itemList = itemList;
+    }
+
+    public String getSecureId() {
+        return secureId;
+    }
+
+    public void setSecureId(String secureId) {
+        this.secureId = secureId;
     }
 }
