@@ -1,12 +1,10 @@
 package com.es.phoneshop.web;
 
 import com.es.phoneshop.model.cart.Cart;
-import com.es.phoneshop.model.cart.DefaultCartService;
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductNotFoundException;
-import com.es.phoneshop.model.product.RecentlyViewedProducts;
-import com.es.phoneshop.model.product.RecentlyViewedProductsService;
+import com.es.phoneshop.model.cart.service.DefaultCartService;
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.price_history.RecentlyViewedProducts;
+import com.es.phoneshop.model.product.price_history.RecentlyViewedProductsService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -20,7 +18,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;

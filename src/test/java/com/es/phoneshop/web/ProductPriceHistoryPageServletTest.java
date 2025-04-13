@@ -1,12 +1,10 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.cart.Cart;
-import com.es.phoneshop.model.cart.DefaultCartService;
-import com.es.phoneshop.model.product.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductNotFoundException;
-import com.es.phoneshop.model.product.RecentlyViewedProducts;
-import com.es.phoneshop.model.product.RecentlyViewedProductsService;
+import com.es.phoneshop.model.exceptions.product.ProductNotFoundException;
+import com.es.phoneshop.model.product.price_history.RecentlyViewedProducts;
+import com.es.phoneshop.model.product.price_history.RecentlyViewedProductsService;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -19,7 +17,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
-import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -50,7 +47,7 @@ public class ProductPriceHistoryPageServletTest {
     @Before
     public void setup() throws ServletException {
         when(productDao.getProduct(1L)).thenReturn(product);
-        when(productDao.getProduct(11L)).thenThrow(new ProductNotFoundException(11L));
+        when(productDao.getProduct(11L)).thenThrow(new ProductNotFoundException("No such product: id 11"));
         when(recentlyViewedProductsService.getProducts(request)).thenReturn(recentlyViewedProducts);
 
         servlet = new ProductPriceHistoryPageServlet(productDao, recentlyViewedProductsService);

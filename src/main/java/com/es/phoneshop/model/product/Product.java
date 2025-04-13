@@ -1,11 +1,14 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.dao.DaoItem;
+import com.es.phoneshop.model.product.price_history.ProductPriceChangeDate;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
 
-public class Product implements Serializable {
+public class Product implements Serializable, DaoItem {
     private Long id;
     private String code;
     private String description;
@@ -57,10 +60,12 @@ public class Product implements Serializable {
         this.priceHistory = priceHistory;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }

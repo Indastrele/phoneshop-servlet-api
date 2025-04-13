@@ -4,5 +4,6 @@
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <tags:master pageTitle="Product not found">
-    <h1>Product not found: id ${ pageContext.request.getAttribute("jakarta.servlet.error.exception").getMessage() }</h1>
+    <h1>Product not found</h1>
+    <h2>${ pageContext.request.getAttribute("jakarta.servlet.error.exception").getMessage() }</h2>
 </tags:master>

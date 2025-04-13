@@ -1,22 +1,27 @@
-package com.es.phoneshop.model.cart;
+package com.es.phoneshop.model.cart.service;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.cart.CartItem;
+import com.es.phoneshop.model.exceptions.cart.NotEnoughStockException;
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.ProductDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import java.math.BigDecimal;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.stream.Collectors;
 
 public class DefaultCartService implements CartService{
     private static final String CART_SESSION_ATTRIBUTE = DefaultCartService.class.getName() + ".cart";
     private static volatile DefaultCartService instance;
 
-    public static synchronized DefaultCartService getInstance() {
+    public static DefaultCartService getInstance() {
         if (instance == null) {
-            instance = new DefaultCartService();
+            synchronized (DefaultCartService.class) {
+                if (instance == null) {
+                    instance = new DefaultCartService();
+                }
+            }
         }
 
         return instance;
@@ -29,7 +34,7 @@ public class DefaultCartService implements CartService{
         this.dao = ArrayListProductDao.getInstance();
     }
 
-    protected DefaultCartService(ProductDao dao) {
+    public DefaultCartService(ProductDao dao) {
         this.dao = dao;
     }
 
@@ -56,7 +61,7 @@ public class DefaultCartService implements CartService{
     public void add(Cart cart, Long productId, int quantity) throws NotEnoughStockException {
         rwLock.writeLock().lock();
         try {
-            int quantityInCart = cart.getCart().stream()
+            int quantityInCart = cart.getItemList().stream()
                     .filter(item -> productId.equals(item.getProduct().getId()))
                     .findFirst()
                     .orElse(new CartItem(null, 0))
@@ -68,7 +73,7 @@ public class DefaultCartService implements CartService{
             }
 
             if (quantityInCart > 0) {
-                cart.getCart().stream()
+                cart.getItemList().stream()
                         .filter(item -> productId.equals(item.getProduct().getId()))
                         .findFirst()
                         .get()
@@ -78,7 +83,7 @@ public class DefaultCartService implements CartService{
                 return;
             }
 
-            cart.getCart().add(new CartItem(dao.getProduct(productId), quantity));
+            cart.getItemList().add(new CartItem(dao.getProduct(productId), quantity));
             recalculateCart(cart);
         } finally {
             rwLock.writeLock().unlock();
@@ -96,7 +101,7 @@ public class DefaultCartService implements CartService{
             }
 
 
-            cart.getCart().stream()
+            cart.getItemList().stream()
                     .filter(item -> productId.equals(item.getProduct().getId()))
                     .findFirst()
                     .get()
@@ -113,7 +118,7 @@ public class DefaultCartService implements CartService{
     public void delete(Cart cart, Long productId) {
         rwLock.writeLock().lock();
         try {
-            cart.getCart().removeIf(item -> productId.equals(item.getProduct().getId()));
+            cart.getItemList().removeIf(item -> productId.equals(item.getProduct().getId()));
             recalculateCart(cart);
         } finally {
             rwLock.writeLock().unlock();
@@ -121,13 +126,13 @@ public class DefaultCartService implements CartService{
     }
 
     private void recalculateCart(Cart cart) {
-        cart.setTotalQuantity(cart.getCart().stream()
+        cart.setTotalQuantity(cart.getItemList().stream()
                 .map(CartItem::getQuantity)
                 .mapToInt(Integer::intValue)
                 .sum()
         );
 
-        cart.setTotalPrice(cart.getCart().stream()
+        cart.setTotalPrice(cart.getItemList().stream()
                 .map(cartItem -> cartItem.getProduct()
                         .getPrice()
                         .multiply(BigDecimal.valueOf(cartItem.getQuantity())))

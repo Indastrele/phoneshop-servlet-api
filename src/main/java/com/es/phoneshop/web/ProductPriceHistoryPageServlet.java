@@ -1,12 +1,10 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.DefaultRecentlyViewedProductsService;
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.price_history.DefaultRecentlyViewedProductsService;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
-import com.es.phoneshop.model.product.ProductNotFoundException;
-import com.es.phoneshop.model.product.RecentlyViewedProducts;
-import com.es.phoneshop.model.product.RecentlyViewedProductsService;
+import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.price_history.RecentlyViewedProductsService;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -18,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ProductPriceHistoryPageServlet extends HttpServlet {
+    private static final String PRICE_HISTORY_PAGE_JSP = "/WEB-INF/pages/productPriceHistoryPage.jsp";
     private static final String PRODUCT = "product";
     private static final String RECENTLY_VIEWED = "recentlyViewed";
     private static final String PRICE_HISTORY_PAGE_JSP = "/WEB-INF/pages/productPriceHistoryPage.jsp";

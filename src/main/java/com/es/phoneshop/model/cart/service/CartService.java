@@ -1,5 +1,7 @@
-package com.es.phoneshop.model.cart;
+package com.es.phoneshop.model.cart.service;
 
+import com.es.phoneshop.model.cart.Cart;
+import com.es.phoneshop.model.exceptions.cart.NotEnoughStockException;
 import jakarta.servlet.http.HttpServletRequest;
 
 public interface CartService {

@@ -1,12 +1,10 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.cart.CartService;
-import com.es.phoneshop.model.cart.DefaultCartService;
-import com.es.phoneshop.model.cart.NotEnoughStockException;
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.DefaultRecentlyViewedProductsService;
-import com.es.phoneshop.model.product.ProductDao;
-import com.es.phoneshop.model.product.RecentlyViewedProductsService;
+import com.es.phoneshop.model.cart.service.CartService;
+import com.es.phoneshop.model.cart.service.DefaultCartService;
+import com.es.phoneshop.model.exceptions.cart.NotEnoughStockException;
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.ProductDao;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -16,9 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
 
 public class AddItemsProductListServlet extends HttpServlet {
     private static final String MESSAGE = "message";

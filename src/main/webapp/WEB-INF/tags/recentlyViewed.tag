@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-<jsp:useBean id="recentlyViewed" type="com.es.phoneshop.model.product.RecentlyViewedProducts" scope="request"/>
+<jsp:useBean id="recentlyViewed" type="com.es.phoneshop.model.product.price_history.RecentlyViewedProducts" scope="request"/>
 <table>
     <tr>
         <c:forEach var="item" items="${recentlyViewed.products}">

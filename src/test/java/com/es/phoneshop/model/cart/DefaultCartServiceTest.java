@@ -1,10 +1,11 @@
 package com.es.phoneshop.model.cart;
 
+import com.es.phoneshop.model.cart.service.CartService;
+import com.es.phoneshop.model.cart.service.DefaultCartService;
+import com.es.phoneshop.model.exceptions.cart.NotEnoughStockException;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
-import com.es.phoneshop.model.product.ProductPriceChangeDate;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
+import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.price_history.ProductPriceChangeDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,16 +37,16 @@ public class DefaultCartServiceTest {
 
     @Test
     public void testAdd() throws NotEnoughStockException {
-        assertTrue(cart.getCart().stream().noneMatch(item -> item.getProduct().getId() == 1L));
+        assertTrue(cart.getItemList().stream().noneMatch(item -> item.getProduct().getId() == 1L));
 
         cartService.add(cart, 1L, 1);
 
-        assertTrue(cart.getCart().stream().anyMatch(item -> item.getProduct().getId() == 1L));
+        assertTrue(cart.getItemList().stream().anyMatch(item -> item.getProduct().getId() == 1L));
     }
 
     @Test(expected = NotEnoughStockException.class)
     public void testAddWithOutEnoughStock() throws NotEnoughStockException {
-        assertTrue(cart.getCart().stream().noneMatch(item -> item.getProduct().getId() == 1L));
+        assertTrue(cart.getItemList().stream().noneMatch(item -> item.getProduct().getId() == 1L));
 
         cartService.add(cart, 1L, 3);
     }

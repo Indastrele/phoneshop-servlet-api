@@ -4,7 +4,7 @@
 <p>Cart</p>
 <table>
     <tr>
-        <c:forEach var="item" items="${cart.cart}">
+        <c:forEach var="item" items="${cart.itemList}">
             <td>
                 <p>${item.product.description}</p>
                 <p>${item.quantity}</p>

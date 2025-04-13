@@ -1,17 +1,25 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.price_history;
 
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.ProductDao;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DefaultRecentlyViewedProductsService implements RecentlyViewedProductsService {
-    private static final String RECENTLY_VIED_ATTRIBUTE = DefaultRecentlyViewedProductsService.class.getName() + ".cart";
+    private static final String RECENTLY_VIED_ATTRIBUTE = DefaultRecentlyViewedProductsService.class
+                                                                                            .getName()
+                                                                                            .concat(".products");
     private static volatile DefaultRecentlyViewedProductsService instance;
 
-    public static synchronized DefaultRecentlyViewedProductsService getInstance() {
+    public static DefaultRecentlyViewedProductsService getInstance() {
         if (instance == null) {
-            instance = new DefaultRecentlyViewedProductsService();
+            synchronized (DefaultRecentlyViewedProductsService.class) {
+                if (instance == null) {
+                    instance = new DefaultRecentlyViewedProductsService();
+                }
+            }
         }
 
         return instance;

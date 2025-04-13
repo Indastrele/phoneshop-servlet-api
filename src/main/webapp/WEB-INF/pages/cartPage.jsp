@@ -26,7 +26,7 @@
                 <td></td>
             </tr>
             </thead>
-            <c:forEach var="item" items="${cart.cart}" varStatus="status">
+            <c:forEach var="item" items="${cart.itemList}" varStatus="status">
                 <tr>
                     <td>
                         <img class="product-tile" src="${item.product.imageUrl}">
@@ -77,7 +77,7 @@
                     <fmt:formatNumber
                             value="${cart.totalPrice}"
                             type="currency"
-                            currencySymbol="${cart.cart[0].product.currency}"/>
+                            currencySymbol="${cart.itemList[0].product.currency}"/>
                 </td>
                 <td></td>
             </tr>
@@ -88,5 +88,8 @@
         </p>
     </form>
     <form id="deleteCartItem" method="post">
+    </form>
+    <form action="${pageContext.request.contextPath}/checkout">
+        <button>Order</button>
     </form>
 </tags:master>

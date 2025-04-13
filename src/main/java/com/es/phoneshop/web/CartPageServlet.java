@@ -1,8 +1,8 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.cart.CartService;
-import com.es.phoneshop.model.cart.DefaultCartService;
-import com.es.phoneshop.model.cart.NotEnoughStockException;
+import com.es.phoneshop.model.cart.service.CartService;
+import com.es.phoneshop.model.cart.service.DefaultCartService;
+import com.es.phoneshop.model.exceptions.cart.NotEnoughStockException;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -14,9 +14,9 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.HashMap;
-import java.util.TreeMap;
 
 public class CartPageServlet extends HttpServlet {
+    private static final String CART_PAGE_JSP = "/WEB-INF/pages/cartPage.jsp";
     private static final String CART = "cart";
     private static final String MESSAGE = "message";
     private static final String QUANTITY = "quantity";

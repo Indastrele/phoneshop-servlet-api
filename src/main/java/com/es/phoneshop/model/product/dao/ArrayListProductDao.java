@@ -1,56 +1,44 @@
-package com.es.phoneshop.model.product;
+package com.es.phoneshop.model.product.dao;
+
+import com.es.phoneshop.model.product.Product;
+import com.es.phoneshop.model.product.SortField;
+import com.es.phoneshop.model.product.SortOrder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ArrayListProductDao implements ProductDao {
+public class ArrayListProductDao extends ProductDao {
     private static volatile ProductDao instance;
     
-    private TreeMap<Long, Integer> relevance = new TreeMap<>();
+    private final TreeMap<Long, Integer> relevance = new TreeMap<>();
 
-    public static synchronized ProductDao getInstance() {
+    public static ProductDao getInstance() {
         if (instance == null) {
-            instance = new ArrayListProductDao();
+            synchronized (ArrayListProductDao.class) {
+                if (instance == null) {
+                    instance = new ArrayListProductDao();
+                }
+            }
         }
 
         return instance;
     }
 
-    private ArrayList<Product> products = new ArrayList<>();
-    private long identity = 1;
-
-    private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-
     private ArrayListProductDao() {
 
     }
 
-    protected ArrayListProductDao(ArrayList<Product> products) {
-        this.products = products;
-    }
-
-    @Override
-    public Product getProduct(Long id) {
-        readWriteLock.readLock().lock();
-        try {
-            return  products.stream()
-                    .filter(product -> id.equals(product.getId()))
-                    .findFirst()
-                    .orElseThrow(() -> new ProductNotFoundException(id));
-        }
-        finally {
-            readWriteLock.readLock().unlock();
-        }
+    public ArrayListProductDao(ArrayList<Product> products) {
+        this.items = products;
     }
 
     @Override
     public List<Product> findProducts(String query, SortField field, SortOrder order) {
-        readWriteLock.readLock().lock();
+        rwLock.readLock().lock();
         try {
             if ((field == null || order == null) && query == null) {
                 return getProducts();
@@ -60,8 +48,7 @@ public class ArrayListProductDao implements ProductDao {
 
             if (field == null || order == null) {
                 relevance.clear();
-                products.stream()
-                        .forEach(product -> relevance.put(product.getId(), calculateProductRelevance(product, query)));
+                items.forEach(product -> relevance.put(product.getId(), calculateProductRelevance(product, query)));
 
                 comparator = Comparator.comparingInt(product -> relevance.get(product.getId()));
 
@@ -83,18 +70,18 @@ public class ArrayListProductDao implements ProductDao {
             return getFilteredProducts(comparator, query);
         }
         finally {
-            readWriteLock.readLock().unlock();
+            rwLock.readLock().unlock();
         }
     }
 
     private List<Product> getProducts() {
-        return products.stream()
+        return items.stream()
                 .filter(product -> product.getPrice() != null && product.getStock() != 0)
                 .toList();
     }
 
     private List<Product> getFilteredProducts(Comparator<Product> comparator, String query) {
-        return products.stream()
+        return items.stream()
                 .filter(product -> {
                     if (product.getPrice() == null || product.getStock() == 0) return false;
 
@@ -119,35 +106,13 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void save(Product product) {
-        readWriteLock.writeLock().lock();
-        try {
-            var id = product.getId();
-            if (id == null) {
-                product.setId(identity++);
-                products.add(product);
-                return;
-            }
-
-            var oldProduct = getProduct(id);
-
-            var index = products.indexOf(oldProduct);
-            product.setId(oldProduct.getId());
-            products.set(index, product);
-        }
-        finally {
-            readWriteLock.writeLock().unlock();
-        }
-    }
-
-    @Override
     public void delete(Long id) {
-        readWriteLock.writeLock().lock();
+        rwLock.writeLock().lock();
         try {
-            products.removeIf(product -> id.equals(product.getId()));
+            items.removeIf(product -> id.equals(product.getId()));
         }
         finally {
-            readWriteLock.writeLock().unlock();
+            rwLock.writeLock().unlock();
         }
     }
 }

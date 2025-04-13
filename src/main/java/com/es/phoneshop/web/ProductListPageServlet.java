@@ -1,12 +1,11 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.cart.CartService;
-import com.es.phoneshop.model.cart.DefaultCartService;
-import com.es.phoneshop.model.cart.NotEnoughStockException;
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.DefaultRecentlyViewedProductsService;
-import com.es.phoneshop.model.product.ProductDao;
-import com.es.phoneshop.model.product.RecentlyViewedProductsService;
+import com.es.phoneshop.model.cart.service.CartService;
+import com.es.phoneshop.model.cart.service.DefaultCartService;
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.price_history.DefaultRecentlyViewedProductsService;
+import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.price_history.RecentlyViewedProductsService;
 import com.es.phoneshop.model.product.SortField;
 import com.es.phoneshop.model.product.SortOrder;
 import jakarta.servlet.ServletConfig;
@@ -17,12 +16,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Optional;
-import java.util.TreeMap;
 
 public class ProductListPageServlet extends HttpServlet {
+    private static final String PRODUCT_LIST_JSP = "/WEB-INF/pages/productList.jsp";
     private static final String QUERY = "query";
     private static final String ORDER = "order";
     private static final String SORT = "sort";

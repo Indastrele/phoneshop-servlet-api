@@ -1,5 +1,9 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.exceptions.product.ProductNotFoundException;
+import com.es.phoneshop.model.product.price_history.ProductPriceChangeDate;
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.ProductDao;
 import org.junit.Before;
 import org.junit.Test;
 
