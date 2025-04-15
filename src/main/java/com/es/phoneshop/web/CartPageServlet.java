@@ -21,7 +21,6 @@ public class CartPageServlet extends HttpServlet {
     private static final String MESSAGE = "message";
     private static final String QUANTITY = "quantity";
     private static final String PRODUCT_ID = "productId";
-    private static final String CART_PAGE_JSP = "/WEB-INF/pages/cartPage.jsp";
     private static final String ERRORS = "errors";
     private CartService cartService;
 
