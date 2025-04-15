@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DeleteCartItemServlet extends HttpServlet {
 
@@ -25,7 +27,9 @@ public class DeleteCartItemServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        if (cartService == null) cartService = DefaultCartService.getInstance();
+        if (cartService == null) {
+            cartService = DefaultCartService.getInstance();
+        }
     }
 
     @Override
@@ -38,12 +42,8 @@ public class DeleteCartItemServlet extends HttpServlet {
                 id
         );
 
-        response.sendRedirect(String.format(
-                "%s/cart?%s=Item with id %d was deleted",
-                request.getContextPath(),
-                MESSAGE,
-                id
-        ));
+        request.getSession().setAttribute(MESSAGE, String.format("Item with id %d was deleted", id));
+        response.sendRedirect(String.format("%s/cart", request.getContextPath()));
     }
 
     private Long getIdFromPath(HttpServletRequest request) {

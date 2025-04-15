@@ -10,13 +10,11 @@
   <p>
     Welcome to Expert-Soft training!
   </p>
-  <c:set var="message" value="${param.message}"/>
   <c:if test="${not empty message}">
-    <p style="color: green;">${param.message}</p>
+    <p style="color: green;">${message}</p>
   </c:if>
-  <c:set var="errorMessage" value="${param.errorMessage}"/>
   <c:if test="${not empty errorMessage}">
-  <p style="color: red;">${param.errorMessage}</p>
+  <p style="color: red;">${errorMessage}</p>
 </c:if>
   <form>
     <input name="query" type="text" value="${param.query}">

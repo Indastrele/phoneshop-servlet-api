@@ -8,10 +8,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.HashMap;
 import java.util.TreeMap;
 
 public class CartPageServlet extends HttpServlet {
@@ -19,7 +21,8 @@ public class CartPageServlet extends HttpServlet {
     private static final String MESSAGE = "message";
     private static final String QUANTITY = "quantity";
     private static final String PRODUCT_ID = "productId";
-    private static final String ERROR = "error";
+    private static final String CART_PAGE_JSP = "/WEB-INF/pages/cartPage.jsp";
+    private static final String ERRORS = "errors";
     private CartService cartService;
 
     public CartPageServlet() {
@@ -32,7 +35,9 @@ public class CartPageServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        if (cartService == null) cartService = DefaultCartService.getInstance();
+        if (cartService == null) {
+            cartService = DefaultCartService.getInstance();
+        }
     }
 
     @Override
@@ -40,7 +45,14 @@ public class CartPageServlet extends HttpServlet {
             throws ServletException, IOException {
         request.setAttribute(CART, cartService == null ? null : cartService.getCart(request));
 
-        request.getRequestDispatcher("/WEB-INF/pages/cartPage.jsp").forward(request, response);
+        HttpSession session = request.getSession();
+        String message = (String)session.getAttribute(MESSAGE);
+        if (message != null) {
+            request.setAttribute(MESSAGE, message);
+            session.setAttribute(MESSAGE, null);
+        }
+
+        request.getRequestDispatcher(CART_PAGE_JSP).forward(request, response);
     }
 
     @Override
@@ -48,35 +60,30 @@ public class CartPageServlet extends HttpServlet {
             throws ServletException, IOException {
         String[] quantityList = request.getParameterValues(QUANTITY);
         String[] productIdList = request.getParameterValues(PRODUCT_ID);
-        TreeMap<Long, String> errors = new TreeMap<>();
+        HashMap<Long, String> errors = new HashMap<>();
 
             var length = quantityList.length;
             for (int i = 0; i < length; i++) {
                 Long productId = Long.valueOf(productIdList[i]);
 
-                int quantity = 0;
-
-                try {
-                    quantity = convertToLong(quantityList[i], request);
-                } catch (ParseException ex) {
-                    errors.put(productId, "Not a number");
-                }
-
                 try {
                     cartService.update(
                             cartService.getCart(request),
                             productId,
-                            quantity
+                            convertToLong(quantityList[i], request)
                     );
                 }  catch (NotEnoughStockException ex) {
                     errors.put(productId, ex.getMessage());
+                } catch (ParseException ex) {
+                    errors.put(productId, "Not a number");
                 }
             }
 
         if (errors.isEmpty()) {
-            response.sendRedirect(request.getContextPath() + "/cart?" + MESSAGE + "=Successful update");
+            request.getSession().setAttribute(MESSAGE, "Successful update");
+            response.sendRedirect(String.format("%s/cart", request.getContextPath()));
         } else {
-            request.setAttribute("errors", errors);
+            request.setAttribute(ERRORS, errors);
             doGet(request, response);
         }
     }

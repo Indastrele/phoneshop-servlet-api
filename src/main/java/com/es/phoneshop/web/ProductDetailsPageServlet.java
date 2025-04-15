@@ -13,11 +13,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProductDetailsPageServlet extends HttpServlet {
     private static final String PRODUCT = "product";
@@ -26,6 +29,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private static final String QUANTITY = "quantity";
     private static final String CART = "cart";
     private static final String RECENTLY_VIEWED = "recentlyViewed";
+    public static final String PRODUCT_PAGE_JSP = "/WEB-INF/pages/productPage.jsp";
     private ProductDao dao;
     private CartService cartService;
     private RecentlyViewedProductsService recentlyViewedProductsService;
@@ -46,8 +50,13 @@ public class ProductDetailsPageServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        if (dao == null) dao = ArrayListProductDao.getInstance();
-        if (cartService == null) cartService = DefaultCartService.getInstance();
+        if (dao == null) {
+            dao = ArrayListProductDao.getInstance();
+        }
+
+        if (cartService == null) {
+            cartService = DefaultCartService.getInstance();
+        }
 
         if (recentlyViewedProductsService == null) {
             recentlyViewedProductsService = DefaultRecentlyViewedProductsService.getInstance();
@@ -60,12 +69,19 @@ public class ProductDetailsPageServlet extends HttpServlet {
         Product product = dao.getProduct(getIdFromPath(request));
         recentlyViewedProductsService.add(recentlyViewedProductsService.getProducts(request), product.getId());
 
+        HttpSession session = request.getSession();
+        String message = (String) session.getAttribute(MESSAGE);
+        if (message != null) {
+            request.setAttribute(MESSAGE, message);
+            session.setAttribute(MESSAGE, null);
+        }
+
         request.setAttribute(PRODUCT, product);
         request.setAttribute(CART, cartService == null ? null : cartService.getCart(request));
         request.setAttribute(
                 RECENTLY_VIEWED,
                 recentlyViewedProductsService == null ? null : recentlyViewedProductsService.getProducts(request));
-        request.getRequestDispatcher("/WEB-INF/pages/productPage.jsp").forward(request, response);
+        request.getRequestDispatcher(PRODUCT_PAGE_JSP).forward(request, response);
     }
 
     @Override
@@ -91,14 +107,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
             return;
         }
 
-        response.sendRedirect(
-                request.getContextPath()
-                        + "/products"
-                        + request.getPathInfo()
-                        + "?"
-                        + MESSAGE
-                        + "=Successfully added to cart"
-        );
+        request.getSession().setAttribute(MESSAGE, "Successfully added to cart");
+        response.sendRedirect(String.format("%s/products%s", request.getContextPath(), request.getPathInfo()));
     }
 
     private Long getIdFromPath(HttpServletRequest request) {

@@ -40,8 +40,12 @@ public class AddItemsProductListServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        if (dao == null) dao = ArrayListProductDao.getInstance();
-        if (cartService == null) cartService = DefaultCartService.getInstance();
+        if (dao == null) {
+            dao = ArrayListProductDao.getInstance();
+        }
+        if (cartService == null) {
+            cartService = DefaultCartService.getInstance();
+        }
     }
 
     @Override
@@ -51,35 +55,24 @@ public class AddItemsProductListServlet extends HttpServlet {
 
         Long productId = getIdFromPath(request);
 
-        int quantity = 0;
-
-        try {
-            quantity = convertToLong(quantityString, request);
-        } catch (ParseException ex) {
-            response.sendRedirect(
-                    request.getContextPath()
-                            + "/products?"
-                            + ERROR_MESSAGE
-                            + "="
-                            + quantityString
-                            + " is not a number"
-            );
-            return;
-        }
-
         try {
             cartService.add(
                     cartService.getCart(request),
                     productId,
-                    quantity
+                    convertToLong(quantityString, request)
             );
-        }  catch (NotEnoughStockException ex) {
-            response.sendRedirect(request.getContextPath() + "/products?" + ERROR_MESSAGE + "=" + ex.getMessage());
+        } catch (NotEnoughStockException ex) {
+            request.getSession().setAttribute(ERROR_MESSAGE, ex.getMessage());
+            response.sendRedirect(String.format("%s/products", request.getContextPath()));
+            return;
+        } catch (ParseException ex) {
+            request.getSession().setAttribute(ERROR_MESSAGE, String.format("%s is not a number", quantityString));
+            response.sendRedirect(String.format("%s/products", request.getContextPath()));
             return;
         }
 
-
-        response.sendRedirect(request.getContextPath() + "/products?" + MESSAGE + "=Successful update");
+        request.getSession().setAttribute(MESSAGE, "Successful update");
+        response.sendRedirect(String.format("%s/products", request.getContextPath()));
     }
 
     private Long getIdFromPath(HttpServletRequest request) {

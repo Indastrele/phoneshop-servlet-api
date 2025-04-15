@@ -5,9 +5,8 @@
 
 <jsp:useBean id="cart" type="com.es.phoneshop.model.cart.Cart" scope="request"/>
 <tags:master pageTitle="Cart">
-    <c:set var="message" value="${param.message}"/>
     <c:if test="${not empty message}">
-        <p style="color: green;">${param.message}</p>
+        <p style="color: green;">${message}</p>
     </c:if>
 
     <form action="${pageContext.request.contextPath}/cart" method="post">

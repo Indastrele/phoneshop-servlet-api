@@ -14,10 +14,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProductPriceHistoryPageServlet extends HttpServlet {
     private static final String PRODUCT = "product";
     private static final String RECENTLY_VIEWED = "recentlyViewed";
+    private static final String PRICE_HISTORY_PAGE_JSP = "/WEB-INF/pages/productPriceHistoryPage.jsp";
     private ProductDao dao;
     private RecentlyViewedProductsService recentlyViewedProductsService;
 
@@ -33,7 +36,9 @@ public class ProductPriceHistoryPageServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        if (dao == null) dao = ArrayListProductDao.getInstance();
+        if (dao == null) {
+            dao = ArrayListProductDao.getInstance();
+        }
 
         if (recentlyViewedProductsService == null) {
             recentlyViewedProductsService = DefaultRecentlyViewedProductsService.getInstance();
@@ -43,13 +48,17 @@ public class ProductPriceHistoryPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String id = request.getPathInfo();
-        Product product = dao.getProduct(Long.valueOf(id.substring(1)));
+        Product product = dao.getProduct(getIdFromPath(request));
 
         request.setAttribute(PRODUCT, product);
         request.setAttribute(
                 RECENTLY_VIEWED,
                 recentlyViewedProductsService == null ? null : recentlyViewedProductsService.getProducts(request));
-        request.getRequestDispatcher("/WEB-INF/pages/productPriceHistoryPage.jsp").forward(request, response);
+        request.getRequestDispatcher(PRICE_HISTORY_PAGE_JSP).forward(request, response);
+    }
+
+    private Long getIdFromPath(HttpServletRequest request) {
+        String idString = request.getPathInfo();
+        return Long.valueOf(idString.substring(1));
     }
 }

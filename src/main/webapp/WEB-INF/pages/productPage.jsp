@@ -8,8 +8,8 @@
   <form action="${pageContext.request.contextPath}/products/${product.id}" method="post">
     <tags:cart />
 
-    <c:if test="${not empty param.message and empty error}">
-      <p style="color: green;">${param.message}</p>
+    <c:if test="${not empty message and empty error}">
+      <p style="color: green;">${message}</p>
     </c:if>
     <c:if test="${not empty error}">
       <p style="color: red;">${error}</p>
