@@ -19,7 +19,6 @@ public class ProductPriceHistoryPageServlet extends HttpServlet {
     private static final String PRICE_HISTORY_PAGE_JSP = "/WEB-INF/pages/productPriceHistoryPage.jsp";
     private static final String PRODUCT = "product";
     private static final String RECENTLY_VIEWED = "recentlyViewed";
-    private static final String PRICE_HISTORY_PAGE_JSP = "/WEB-INF/pages/productPriceHistoryPage.jsp";
     private ProductDao dao;
     private RecentlyViewedProductsService recentlyViewedProductsService;
 

@@ -28,9 +28,6 @@ public class ProductListPageServlet extends HttpServlet {
     private static final String RECENTLY_VIEWED = "recentlyViewed";
     private static final String MESSAGE = "message";
     private static final String ERROR_MESSAGE = "errorMessage";
-    private static final String QUANTITY = "quantity";
-    private static final String PRODUCT_ID = "productId";
-    private static final String PRODUCT_LIST_JSP = "/WEB-INF/pages/productList.jsp";
     private ProductDao dao;
     private CartService cartService;
     private RecentlyViewedProductsService recentlyViewedProductsService;

@@ -30,7 +30,6 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private static final String QUANTITY = "quantity";
     private static final String CART = "cart";
     private static final String RECENTLY_VIEWED = "recentlyViewed";
-    public static final String PRODUCT_PAGE_JSP = "/WEB-INF/pages/productPage.jsp";
     private ProductDao dao;
     private CartService cartService;
     private RecentlyViewedProductsService recentlyViewedProductsService;
