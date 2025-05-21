@@ -12,7 +12,7 @@
                 <label>
                     Description
                     <input type="text" name="description">
-                    <select name="sortType">
+                    <select name="descriptionSearchType">
                         <option>all words</option>
                         <option>any words</option>
                     </select>

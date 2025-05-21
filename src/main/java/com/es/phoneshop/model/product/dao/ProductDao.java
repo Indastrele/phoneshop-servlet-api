@@ -2,10 +2,12 @@ package com.es.phoneshop.model.product.dao;
 
 import com.es.phoneshop.model.dao.GenericDao;
 import com.es.phoneshop.model.exceptions.product.ProductNotFoundException;
+import com.es.phoneshop.model.product.DescriptionSearchType;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.SortField;
 import com.es.phoneshop.model.product.SortOrder;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public abstract class ProductDao extends GenericDao<Product, ProductNotFoundException> {
@@ -13,6 +15,8 @@ public abstract class ProductDao extends GenericDao<Product, ProductNotFoundExce
         return getItem(id, new ProductNotFoundException("No such product: id ".concat(id.toString())));
     }
     public abstract List<Product> findProducts(String query, SortField field, SortOrder order);
+    public abstract List<Product> findProductsByCriteria(String description, BigDecimal minPrice, BigDecimal maxPrice,
+                                                         DescriptionSearchType searchType);
     public void save(Product product) {
         save(product, new ProductNotFoundException("No such product"));
     };

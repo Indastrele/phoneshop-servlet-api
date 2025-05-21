@@ -1,9 +1,11 @@
 package com.es.phoneshop.model.product.dao;
 
+import com.es.phoneshop.model.product.DescriptionSearchType;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.SortField;
 import com.es.phoneshop.model.product.SortOrder;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -103,6 +105,19 @@ public class ArrayListProductDao extends ProductDao {
                 .toList();
 
         return tokenizedQuery.size() - intersections.size();
+    }
+
+    @Override
+    public List<Product> findProductsByCriteria(String description, BigDecimal minPrice, BigDecimal maxPrice,
+                                                DescriptionSearchType searchType) {
+        if (searchType == null) {
+            return new ArrayList<>();
+        }
+        if (description.isEmpty() && minPrice == null && maxPrice == null) {
+            return getProducts();
+        }
+
+        return new ArrayList<>();
     }
 
     @Override

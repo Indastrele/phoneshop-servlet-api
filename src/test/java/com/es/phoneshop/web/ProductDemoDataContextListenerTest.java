@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.model.product.DescriptionSearchType;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.SortField;
@@ -12,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,11 @@ public class ProductDemoDataContextListenerTest {
             @Override
             public List<Product> findProducts(String query, SortField field, SortOrder order) {
                 return products;
+            }
+
+            @Override
+            public List<Product> findProductsByCriteria(String description, BigDecimal minPrice, BigDecimal maxPrice, DescriptionSearchType searchType) {
+                return null;
             }
 
             @Override
