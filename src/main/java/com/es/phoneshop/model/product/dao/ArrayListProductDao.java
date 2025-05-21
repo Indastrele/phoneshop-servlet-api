@@ -119,10 +119,38 @@ public class ArrayListProductDao extends ProductDao {
                 return getProducts();
             }
 
-            return new ArrayList<>();
+            List<Product> products = items.stream().filter(item -> switch (searchType) {
+                case ANY_WORDS -> getProductsWithAnyWords(description, item.getDescription());
+                case ALL_WORDS -> getProductsWithAllWords(description, item.getDescription());
+            }).toList();
+
+            if (maxPrice == null && minPrice == null) {
+                return products;
+            }
+
+            if (minPrice != null && maxPrice == null) {
+                return products.stream().filter(item -> minPrice.doubleValue() <= item.getPrice().doubleValue()).toList();
+            }
+
+            if (minPrice == null) {
+                return products.stream().filter(item -> maxPrice.doubleValue() >= item.getPrice().doubleValue()).toList();
+            }
+
+            return products.stream().filter(item -> maxPrice.doubleValue() >= item.getPrice().doubleValue() &&
+                    minPrice.doubleValue() <= item.getPrice().doubleValue()).toList();
         } finally {
             rwLock.readLock().unlock();
         }
+    }
+
+    private boolean getProductsWithAllWords(String query, String description) {
+        List<String> splittedQuery = List.of(query.toLowerCase().split(" "));
+        return splittedQuery.stream().allMatch(description.toLowerCase()::contains);
+    }
+
+    private boolean getProductsWithAnyWords(String query, String description) {
+        List<String> splittedQuery = List.of(query.toLowerCase().split(" "));
+        return splittedQuery.stream().anyMatch(description.toLowerCase()::contains);
     }
 
     @Override

@@ -11,7 +11,7 @@
             <span style="align-content: flex-start;">
                 <label>
                     Description
-                    <input type="text" name="description">
+                    <input type="text" name="description" value="${param.description}">
                     <select name="descriptionSearchType">
                         <option>all words</option>
                         <option>any words</option>
