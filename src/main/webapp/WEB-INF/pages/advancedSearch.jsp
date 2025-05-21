@@ -20,17 +20,25 @@
             </span>
             <br>
             <span style="align-content: flex-start;">
+                <c:set var="minPriceError" value="${errors['minPrice']}"/>
                 <label>
                     Min price
-                    <input type="text" name="minPrice">
+                    <input type="text" name="minPrice" value="${param.minPrice}">
                 </label>
+                <c:if test="${not empty minPriceError}">
+                    <span style="color: red;">${minPriceError}</span>
+                </c:if>
             </span>
             <br>
             <span style="align-content: flex-start;">
+                <c:set var="maxPriceError" value="${errors['maxPrice']}"/>
                 <label>
                     Max price
-                    <input type="text" name="maxPrice">
+                    <input type="text" name="maxPrice" value="${param.maxPrice}">
                 </label>
+                <c:if test="${not empty maxPriceError}">
+                    <span style="color: red;">${maxPriceError}</span>
+                </c:if>
             </span>
             <br>
             <button>Search</button>

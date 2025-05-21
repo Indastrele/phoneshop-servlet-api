@@ -110,14 +110,19 @@ public class ArrayListProductDao extends ProductDao {
     @Override
     public List<Product> findProductsByCriteria(String description, BigDecimal minPrice, BigDecimal maxPrice,
                                                 DescriptionSearchType searchType) {
-        if (searchType == null) {
-            return new ArrayList<>();
-        }
-        if (description.isEmpty() && minPrice == null && maxPrice == null) {
-            return getProducts();
-        }
+        rwLock.readLock().lock();
+        try {
+            if (searchType == null) {
+                return new ArrayList<>();
+            }
+            if ((description == null || description.isEmpty()) && minPrice == null && maxPrice == null) {
+                return getProducts();
+            }
 
-        return new ArrayList<>();
+            return new ArrayList<>();
+        } finally {
+            rwLock.readLock().unlock();
+        }
     }
 
     @Override
